@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- SEO Optimization -->
+    <title>LexiQuest | The Ultimate Word Gauntlet by Rareprints</title>
+    <meta name="description" content="Play LexiQuest, the high-stakes word game with Education and Entertainment realms. Proudly powered by rareprints.in - Experts in custom 3D printed gifts and decor.">
+    <meta name="keywords" content="LexiQuest, word game, rareprints, 3D printing India, educational quiz, Bollywood game, custom gifts, interactive games">
+    <meta name="author" content="rareprints.in">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #020617; --card: #0f172a; --accent: #22d3ee;
+            --wrong: #f43f5e; --win: #10b981; --gold: #fbbf24; --text: #f1f5f9;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-main); background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes letter-pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-neon { 0%, 100% { box-shadow: 0 0 5px var(--accent); } 50% { box-shadow: 0 0 20px var(--accent); } }
+
+        /* --- NAVIGATION --- */
+        header { padding: 15px 20px; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid #1e293b; position: sticky; top: 0; z-index: 100; }
+        .nav-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .streak-tag { background: rgba(251, 191, 36, 0.1); color: var(--gold); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--gold); font-weight: 800; font-size: 0.9rem; animation: pulse-neon 2s infinite; }
+
+        /* --- LAYOUT --- */
+        main { flex-grow: 1; width: 100%; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .screen { display: none; animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- DOMAIN CARDS --- */
+        .realm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .realm-card { 
+            background: var(--card); border: 1px solid #1e293b; padding: 40px; border-radius: 24px; 
+            cursor: pointer; text-align: center; transition: all 0.3s ease;
+        }
+        .realm-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent); }
+
+        /* --- GAMEPLAY ELEMENTS --- */
+        .dropdown-container { margin-bottom: 20px; text-align: center; }
+        select {
+            background: var(--card); color: var(--accent); border: 2px solid var(--accent);
+            padding: 10px 15px; border-radius: 12px; font-family: var(--font-head);
+            font-weight: 700; font-size: 0.9rem; cursor: pointer; width: 100%; max-width: 300px;
+        }
+
+        .timer-box { font-family: var(--font-mono); font-size: 1.5rem; color: var(--gold); margin: 10px 0; }
+
+        .slot { 
+            width: 35px; height: 50px; border-radius: 8px; background: var(--card); 
+            border: 2px solid #334155; font-size: 1.5rem; font-weight: 800; 
+            display: flex; justify-content: center; align-items: center; color: var(--accent);
+        }
+        .slot.revealed { animation: letter-pop 0.3s forwards; border-color: var(--accent); background: rgba(34, 211, 238, 0.05); }
+        .slot.slash { border: none; color: var(--wrong); font-family: var(--font-mono); }
+
+        /* --- RESPONSIVE KEYBOARD --- */
+        .keyboard { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; max-width: 600px; margin: 30px auto; }
+        .key { 
+            background: var(--card); border: 1px solid #334155; color: white; 
+            padding: 15px 0; border-radius: 8px; cursor: pointer; font-weight: 700; 
+            font-size: 0.9rem; transition: 0.2s;
+        }
+        .key.used { opacity: 0.15; pointer-events: none; }
+        @media (max-width: 500px) {
+            .keyboard { grid-template-columns: repeat(6, 1fr); }
+            .slot { width: 30px; height: 45px; font-size: 1.2rem; }
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .footer { background: var(--card); border-top: 1px solid #1e293b; padding: 40px 20px; text-align: center; margin-top: 40px; }
+        .footer a { color: var(--accent); text-decoration: none; font-weight: 800; }
+        .insta-id { display: block; margin-top: 10px; color: var(--gold); font-family: var(--font-mono); font-size: 0.9rem; }
+
+        /* --- MODAL --- */
+        #modal { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.98); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-card { background: var(--card); border: 2px solid var(--accent); padding: 30px; border-radius: 24px; text-align: center; max-width: 400px; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-inner">
+            <h1 style="font-family: var(--font-head); color: var(--accent); font-size: 1.4rem; cursor: pointer;" onclick="location.reload()">LexiQuest</h1>
+            <div class="streak-tag">🔥 STREAK: <span id="streak-count">0</span></div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Domain Selection -->
+        <section id="realm-screen" class="screen" style="display: block;">
+            <h2 style="text-align: center; font-family: var(--font-head); margin-bottom: 5px;">Welcome to the Gauntlet</h2>
+            <p style="text-align: center; opacity: 0.6; margin-bottom: 20px; font-size: 0.9rem;">Powered by rareprints.in</p>
+            <div class="realm-grid" id="realm-container">
+                <p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Loading Game Data...</p>
+            </div>
+        </section>
+
+        <!-- Gameplay -->
+        <section id="game-screen" class="screen">
+            <div style="text-align:center;">
+                <button onclick="showScreen('realm-screen')" style="background:none; border:none; color:var(--text); cursor:pointer; opacity:0.5; margin-bottom:15px; font-weight:600; font-size: 0.8rem;">← CHANGE DOMAIN</button>
+                
+                <div class="dropdown-container">
+                    <select id="section-select" onchange="switchSection()"></select>
+                </div>
+
+                <div id="lives-display" style="font-family: var(--font-mono); font-size: 2rem; color: var(--wrong); letter-spacing: 5px; margin-bottom: 10px;"></div>
+                <div class="timer-box">00:<span id="timer-val">45</span></div>
+            </div>
+
+            <div id="word-slots" style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin: 30px 0;"></div>
+            <div class="keyboard" id="keyboard"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p style="margin-bottom: 10px; opacity: 0.8;">Need Custom 3D Printed Gifts?</p>
+        <a href="https://rareprints.in" target="_blank">Visit rareprints.in</a>
+        <a href="https://instagram.com/rareprints3d" class="insta-id" target="_blank">Instagram: @rareprints3d</a>
+    </footer>
+
+    <div id="modal">
+        <div class="modal-card">
+            <h2 id="modal-status" style="font-size: 2rem; margin-bottom: 10px; font-family: var(--font-head);"></h2>
+            <div id="modal-word" style="font-size: 1.5rem; color: var(--accent); font-weight: 800; margin-bottom: 15px; letter-spacing: 2px;"></div>
+            <p id="modal-info" style="opacity: 0.7; font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
+            <button onclick="closeModal()" style="background:var(--accent); border:none; padding:12px 30px; border-radius:10px; font-weight:800; cursor:pointer; width: 100%;">CONTINUE</button>
+        </div>
+    </div>
+
+    <script>
+        let DATABASE = {};
+        let streak = parseInt(localStorage.getItem('lexi_streak')) || 0;
+        let currentDomain, currentSection, currentWord, guessedLetters = [], mistakes = 0, timeLeft = 45, timer;
+        
+        const LIFE_KEYS = { "EDUCATION": "PADHLO", "ENTERTAINMENT": "CINEMA" };
+
+        async function init() {
+            try {
+                const res = await fetch('data.json');
+                DATABASE = await res.json();
+                renderDomains();
+            } catch (e) {
+                console.error("JSON Load Error");
+            }
+        }
+
+        function renderDomains() {
+            const container = document.getElementById('realm-container');
+            container.innerHTML = "";
+            Object.keys(DATABASE).forEach(domain => {
+                const card = document.createElement('div');
+                card.className = "realm-card";
+                card.innerHTML = `<h2 style="font-family: var(--font-head);">${domain}</h2><p style="opacity:0.4; font-size:0.8rem; margin-top:10px;">Click to Start</p>`;
+                card.onclick = () => launchDomain(domain);
+                container.appendChild(card);
+            });
+        }
+
+        function launchDomain(domain) {
+            currentDomain = domain;
+            const sections = Object.keys(DATABASE[domain]);
+            const select = document.getElementById('section-select');
+            select.innerHTML = "";
+            sections.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.innerText = s.replace(/_/g, ' ');
+                select.appendChild(opt);
+            });
+            currentSection = sections[0];
+            showScreen('game-screen');
+            startRound();
+        }
+
+        function switchSection() {
+            currentSection = document.getElementById('section-select').value;
+            startRound();
+        }
+
+        function showScreen(id) {
+            clearInterval(timer);
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            document.getElementById('streak-count').innerText = streak;
+        }
+
+        function startRound() {
+            const pool = DATABASE[currentDomain][currentSection];
+            currentWord = pool[Math.floor(Math.random() * pool.length)];
+            
+            guessedLetters = []; // NO WORD DISCLOSED AT START
+            mistakes = 0;
+            resetClock();
+            renderUI();
+        }
+
+        function resetClock() {
+            clearInterval(timer);
+            timeLeft = 45;
+            document.getElementById('timer-val').innerText = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-val').innerText = timeLeft < 10 ? '0'+timeLeft : timeLeft;
+                if(timeLeft <= 0) finalize(false);
+            }, 1000);
+        }
+
+        function renderUI() {
+            const livesText = LIFE_KEYS[currentDomain] || "LIVES";
+            document.getElementById('lives-display').innerText = livesText.substring(0, livesText.length - mistakes);
+            
+            const slots = document.getElementById('word-slots');
+            slots.innerHTML = "";
+            currentWord.w.toUpperCase().split('').forEach(char => {
+                const div = document.createElement('div');
+                if(char === ' ') {
+                    div.className = "slot slash";
+                    div.innerText = "/";
+                } else {
+                    div.className = "slot";
+                    if(guessedLetters.includes(char)) {
+                        div.innerText = char;
+                        div.classList.add('revealed');
+                    }
+                }
+                slots.appendChild(div);
+            });
+
+            const kb = document.getElementById('keyboard');
+            kb.innerHTML = "";
+            "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(key => {
+                const b = document.createElement('button');
+                b.className = "key";
+                if(guessedLetters.includes(key)) b.classList.add('used');
+                b.innerText = key;
+                b.onclick = () => handleGuess(key);
+                kb.appendChild(b);
+            });
+
+            if (mistakes >= livesText.length) finalize(false);
+        }
+
+        function handleGuess(key) {
+            if(!guessedLetters.includes(key)) {
+                guessedLetters.push(key);
+                if(!currentWord.w.toUpperCase().includes(key)) mistakes++;
+                
+                resetClock(); // RESET TIMER TO 45 SECS AFTER EVERY CHANCE
+                renderUI();
+                
+                const win = currentWord.w.toUpperCase().split('').every(c => c === ' ' || guessedLetters.includes(c));
+                if(win) finalize(true);
+            }
+        }
+
+        function finalize(win) {
+            clearInterval(timer);
+            streak = win ? streak + 1 : 0;
+            localStorage.setItem('lexi_streak', streak);
+            
+            document.getElementById('modal-status').innerText = win ? "VICTORY" : "DEFEAT";
+            document.getElementById('modal-status').style.color = win ? "var(--win)" : "var(--wrong)";
+            document.getElementById('modal-word').innerText = currentWord.w.toUpperCase().replace(/ /g, '/');
+            document.getElementById('modal-info').innerText = currentWord.i;
+            document.getElementById('modal').style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+            if(streak > 0) startRound(); else showScreen('realm-screen');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
