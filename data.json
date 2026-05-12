@@ -1,0 +1,23 @@
+{
+  "EDUCATION": {
+    "NUMBERS_1_TO_10": [
+      { "w": "1", "i": "Unity. The only number that is neither prime nor composite." },
+      { "w": "7", "i": "Lucky number. Days in a week and colors in a rainbow." },
+      { "w": "10", "i": "A decade. The base of the decimal system." }
+    ],
+    "ALPHABETS_A_TO_J": [
+      { "w": "A", "i": "The first letter. Originates from the symbol for an ox." },
+      { "w": "E", "i": "The most commonly used letter in the English language." },
+      { "w": "J", "i": "The last letter added to the English alphabet." }
+    ]
+  },
+  "ENTERTAINMENT": {
+    "BOLLYWOOD_CLASSICS": [
+      { "w": "SHOLAY", "i": "A 1975 masterpiece that ran for 5 years in theaters." },
+      { "w": "MUGHAL E AZAM", "i": "A historical epic that took over a decade to film." }
+    ],
+    "SOUND_FILMS": [
+      { "w": "ALAM ARA", "i": "India's first 'talkie' or sound film released in 1931." }
+    ]
+  }
+}
