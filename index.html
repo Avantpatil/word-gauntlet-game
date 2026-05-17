@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- SEO Optimization -->
-    <title>LexiQuest | The Ultimate Word Gauntlet by Rareprints</title>
-    <meta name="description" content="Play LexiQuest, the high-stakes word game with Education and Entertainment realms. Proudly powered by rareprints.in - Experts in custom 3D printed gifts and decor.">
-    <meta name="keywords" content="LexiQuest, word game, rareprints, 3D printing India, educational quiz, Bollywood game, custom gifts, interactive games">
+    <title>LexiQuest | The Ultimate Word Gauntlet & Live 3D Gifts Portal</title>
+    <meta name="description" content="Play LexiQuest, the high-stakes word blitz game with specialized Education and Entertainment sub-realms. Explore premium custom 3D printed gifts live from rareprints.in.">
+    <meta name="keywords" content="LexiQuest, word blitz, rareprints, 3D printing store India, custom architectural models, educational quiz game, Bollywood arcade, immersive shopping">
     <meta name="author" content="rareprints.in">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,6 +48,21 @@
         }
         .realm-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent); }
 
+        /* --- PREMIUM LIVE IFRAME SHOPPING WINDOW --- */
+        .storefront-window {
+            margin: 35px 0; background: #0b1329; border: 2px solid var(--accent); 
+            border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(34, 211, 238, 0.15);
+        }
+        .storefront-bar {
+            background: #1e293b; padding: 12px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155;
+        }
+        .storefront-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .storefront-dot.r { background: #f43f5e; }
+        .storefront-dot.y { background: #fbbf24; }
+        .storefront-dot.g { background: #10b981; }
+        .storefront-url { color: #94a3b8; font-size: 0.85rem; font-family: var(--font-mono); margin-left: 12px; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .storefront-frame { width: 100%; height: 450px; border: none; background: #ffffff; display: block; }
+
         /* --- GAMEPLAY ELEMENTS --- */
         .dropdown-container { margin-bottom: 20px; text-align: center; }
         select {
@@ -74,9 +89,11 @@
             font-size: 0.9rem; transition: 0.2s;
         }
         .key.used { opacity: 0.15; pointer-events: none; }
+        
         @media (max-width: 500px) {
             .keyboard { grid-template-columns: repeat(6, 1fr); }
             .slot { width: 30px; height: 45px; font-size: 1.2rem; }
+            .storefront-frame { height: 350px; }
         }
 
         /* --- BRANDING FOOTER --- */
@@ -99,16 +116,29 @@
     </header>
 
     <main>
-        <!-- Domain Selection -->
+        <!-- Domain Selection Screen -->
         <section id="realm-screen" class="screen" style="display: block;">
             <h2 style="text-align: center; font-family: var(--font-head); margin-bottom: 5px;">Welcome to the Gauntlet</h2>
             <p style="text-align: center; opacity: 0.6; margin-bottom: 20px; font-size: 0.9rem;">Powered by rareprints.in</p>
+            
             <div class="realm-grid" id="realm-container">
                 <p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Loading Game Data...</p>
             </div>
+
+            <!-- Premium Immersive Live Storefront Iframe -->
+            <div class="storefront-window">
+                <div class="storefront-bar">
+                    <span class="storefront-dot r"></span>
+                    <span class="storefront-dot y"></span>
+                    <span class="storefront-dot g"></span>
+                    <span class="storefront-url">https://rareprints.in/live-catalog_view</span>
+                    <span style="color: var(--accent); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 6px;">STOREFRONT</span>
+                </div>
+                <iframe class="storefront-frame" src="https://rareprints.in" title="Rareprints Live Store Catalog"></iframe>
+            </div>
         </section>
 
-        <!-- Gameplay -->
+        <!-- Gameplay Screen -->
         <section id="game-screen" class="screen">
             <div style="text-align:center;">
                 <button onclick="showScreen('realm-screen')" style="background:none; border:none; color:var(--text); cursor:pointer; opacity:0.5; margin-bottom:15px; font-weight:600; font-size: 0.8rem;">← CHANGE DOMAIN</button>
@@ -127,7 +157,7 @@
     </main>
 
     <footer class="footer">
-        <p style="margin-bottom: 10px; opacity: 0.8;">Need Custom 3D Printed Gifts?</p>
+        <p style="margin-bottom: 10px; opacity: 0.8;">Need Custom 3D Printed Gifts & Architectural Models?</p>
         <a href="https://rareprints.in" target="_blank">Visit rareprints.in</a>
         <a href="https://instagram.com/rareprints3d" class="insta-id" target="_blank">Instagram: @rareprints3d</a>
     </footer>
@@ -149,13 +179,21 @@
         const LIFE_KEYS = { "EDUCATION": "PADHLO", "ENTERTAINMENT": "CINEMA" };
 
         async function init() {
+            setStreak(streak); // Continuous initial update
             try {
                 const res = await fetch('data.json');
                 DATABASE = await res.json();
                 renderDomains();
             } catch (e) {
-                console.error("JSON Load Error");
+                console.error("JSON Data Load Error");
             }
+        }
+
+        // Continuous State Tracker for Game Streaks
+        function setStreak(val) {
+            streak = val;
+            localStorage.setItem('lexi_streak', streak);
+            document.getElementById('streak-count').innerText = streak;
         }
 
         function renderDomains() {
@@ -195,14 +233,13 @@
             clearInterval(timer);
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             document.getElementById(id).style.display = 'block';
-            document.getElementById('streak-count').innerText = streak;
         }
 
         function startRound() {
             const pool = DATABASE[currentDomain][currentSection];
             currentWord = pool[Math.floor(Math.random() * pool.length)];
             
-            guessedLetters = []; // NO WORD DISCLOSED AT START
+            guessedLetters = []; // STAYS BLANK: NO WORDS DISCLOSED AT START
             mistakes = 0;
             resetClock();
             renderUI();
@@ -259,7 +296,7 @@
                 guessedLetters.push(key);
                 if(!currentWord.w.toUpperCase().includes(key)) mistakes++;
                 
-                resetClock(); // RESET TIMER TO 45 SECS AFTER EVERY CHANCE
+                resetClock(); // RESET TIMER TO 45 SECONDS CONTINUOUSLY AFTER EVERY CHANCE
                 renderUI();
                 
                 const win = currentWord.w.toUpperCase().split('').every(c => c === ' ' || guessedLetters.includes(c));
@@ -269,8 +306,7 @@
 
         function finalize(win) {
             clearInterval(timer);
-            streak = win ? streak + 1 : 0;
-            localStorage.setItem('lexi_streak', streak);
+            setStreak(win ? streak + 1 : 0); // Updates continuously immediately upon state modification
             
             document.getElementById('modal-status').innerText = win ? "VICTORY" : "DEFEAT";
             document.getElementById('modal-status').style.color = win ? "var(--win)" : "var(--wrong)";
